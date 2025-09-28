@@ -10,8 +10,6 @@ This report implements and analyzes four exercises on **Multi-Layer Perceptrons 
 - Multiclass (Ex. 3–4) output: **softmax** with **cross-entropy (CE)**.
 - Learning rate for training: **$\eta = 0.3$** (as requested).
 - Reproducible synthetic datasets (2D) to visualize **decision boundaries**.
-- All figures saved to  
-  `./images`
 
 Rubric alignment:
 - Clear math derivations (Ex. 1).
@@ -41,42 +39,59 @@ tanh derivative: $\displaystyle \frac{d}{du}\tanh(u)=1-\tanh^2(u)$.
 ## 1) Forward Pass
 
 **Hidden pre-activations**
+
 $$
 \mathbf{z}^{(1)}=\mathbf{x}\,\mathbf{W}^{(1)}+\mathbf{b}^{(1)}
 $$
+
 Compute:
+
 $$
 \begin{aligned}
 z^{(1)}_1&=0.5(0.3)+(-0.2)(0.2)+0.1=\mathbf{0.210000},\\
 z^{(1)}_2&=0.5(-0.1)+(-0.2)(0.4)+(-0.2)=\mathbf{-0.330000}.
 \end{aligned}
 $$
+
 $$
 \boxed{\mathbf{z}^{(1)}=[\,0.210000,\;-0.330000\,]}
 $$
 
 **Hidden activations**
+
 $$
 \mathbf{h}^{(1)}=\tanh(\mathbf{z}^{(1)})
-\Rightarrow
+$$
+
+$$
 \boxed{\mathbf{h}^{(1)}=[\,0.20696650,\;-0.31852078\,]}
 $$
 
 **Output pre-activation**
+
 $$
 u^{(2)}=\mathbf{h}^{(1)}\mathbf{W}^{(2)}+b^{(2)}
 = (0.20696650)(0.5)+(-0.31852078)(-0.3)+0.2
-=\boxed{0.39903948}
+$$
+
+$$
+\boxed{u^{(2)}=0.39903948}
 $$
 
 **Final output**
+
 $$
-\hat y=\tanh(u^{(2)})=\tanh(0.39903948)=\boxed{0.37912681}
+\hat y=\tanh(u^{(2)})
+$$
+
+$$
+\boxed{\hat y=0.37912681}
 $$
 
 ## 2) Loss Calculation (MSE)
 
 With $N=1$:
+
 $$
 L=(y-\hat y)^2=(1.0-0.37912681)^2=\boxed{0.38548352}.
 $$
@@ -86,62 +101,84 @@ $$
 Start with $\displaystyle \frac{\partial L}{\partial \hat y}$ and use the **tanh** derivative.
 
 **At the output**
+
 $$
-\frac{\partial L}{\partial \hat y}=2(\hat y-y)=\boxed{-1.24174638},\qquad
+\frac{\partial L}{\partial \hat y}=2(\hat y-y)=\boxed{-1.24174638}
+$$
+
+$$
 \frac{\partial \hat y}{\partial u^{(2)}}=1-\hat y^2=\boxed{0.85626286}
 $$
+
 $$
-\Rightarrow\quad
-\frac{\partial L}{\partial u^{(2)}}=\boxed{-1.06326131}.
+\frac{\partial L}{\partial u^{(2)}}=\frac{\partial L}{\partial \hat y}\cdot\frac{\partial \hat y}{\partial u^{(2)}}=\boxed{-1.06326131}
 $$
 
 **Output-layer gradients**
+
 $$
-\frac{\partial L}{\partial \mathbf{W}^{(2)}}=\mathbf{h}^{(1)\top}\frac{\partial L}{\partial u^{(2)}}=
-\boxed{\begin{bmatrix}-0.22005947\\[2pt]\;\;0.33867082\end{bmatrix}},\qquad
-\frac{\partial L}{\partial b^{(2)}}=\boxed{-1.06326131}.
+\frac{\partial L}{\partial \mathbf{W}^{(2)}}=\mathbf{h}^{(1)\top}\frac{\partial L}{\partial u^{(2)}}
+=\boxed{\begin{bmatrix}-0.22005947\\[2pt]\;\;0.33867082\end{bmatrix}}
+$$
+
+$$
+\frac{\partial L}{\partial b^{(2)}}=\boxed{-1.06326131}
 $$
 
 **Backprop to hidden**
+
 $$
 \frac{\partial L}{\partial \mathbf{h}^{(1)}}=\frac{\partial L}{\partial u^{(2)}}\,\mathbf{W}^{(2)\top}
-=\boxed{[\, -0.53163065,\; 0.31897839 \,]},
+=\boxed{[\, -0.53163065,\; 0.31897839 \,]}
 $$
+
 $$
 \frac{\partial \mathbf{h}^{(1)}}{\partial \mathbf{z}^{(1)}} = 1-\tanh^2(\mathbf{z}^{(1)})
-=\boxed{[\,0.95716487,\;0.89854451\,]},
+=\boxed{[\,0.95716487,\;0.89854451\,]}
 $$
+
 $$
-\Rightarrow\;
 \frac{\partial L}{\partial \mathbf{z}^{(1)}}=
-\boxed{[\, -0.50885819,\; 0.28661628 \,]}.
+\frac{\partial L}{\partial \mathbf{h}^{(1)}}\odot\frac{\partial \mathbf{h}^{(1)}}{\partial \mathbf{z}^{(1)}}
+=\boxed{[\, -0.50885819,\; 0.28661628 \,]}
 $$
 
 **Hidden-layer gradients**
+
 $$
 \frac{\partial L}{\partial \mathbf{W}^{(1)}}=
 \boxed{\begin{bmatrix}
 -0.25442909 & \;\;0.14330814\\[2pt]
 \;\;0.10177164 & -0.05732326
-\end{bmatrix}},\qquad
+\end{bmatrix}}
+$$
+
+$$
 \frac{\partial L}{\partial \mathbf{b}^{(1)}}=
-\boxed{[\, -0.50885819,\; 0.28661628 \,]}.
+\boxed{[\, -0.50885819,\; 0.28661628 \,]}
 $$
 
 ## 4) Parameter Update (GD, $\eta=0.3$)
+
 $$
 \theta\leftarrow\theta-\eta\,\frac{\partial L}{\partial\theta}.
 $$
+
 **Output layer**
+
 $$
 \mathbf{W}^{(2)}_{\text{new}}=
 \begin{bmatrix}0.5\\[2pt]-0.3\end{bmatrix}
 -0.3\begin{bmatrix}-0.22005947\\[2pt]\;\;0.33867082\end{bmatrix}
-=\boxed{\begin{bmatrix}0.56601784\\[2pt]-0.40160125\end{bmatrix}},\quad
-b^{(2)}_{\text{new}}=\boxed{0.51897839}.
+=\boxed{\begin{bmatrix}0.56601784\\[2pt]-0.40160125\end{bmatrix}}
+$$
+
+$$
+b^{(2)}_{\text{new}}=\boxed{0.51897839}
 $$
 
 **Hidden layer**
+
 $$
 \mathbf{W}^{(1)}_{\text{new}}=
 \begin{bmatrix}0.3 & -0.1\\[2pt]0.2 & 0.4\end{bmatrix}
@@ -149,12 +186,13 @@ $$
 =\boxed{\begin{bmatrix}
 0.37632873 & -0.14299244\\[2pt]
 0.16946851 & \;\;0.41719698
-\end{bmatrix}},
+\end{bmatrix}}
 $$
+
 $$
 \mathbf{b}^{(1)}_{\text{new}}=
 [\,0.1,\;-0.2\,]-0.3[\, -0.50885819,\; 0.28661628 \,]
-=\boxed{[\,0.25265746,\;-0.28598488\,]}.
+=\boxed{[\,0.25265746,\;-0.28598488\,]}
 $$
 
 ## (Optional) Finite-Difference Sanity Checks
@@ -162,14 +200,26 @@ $$
 We verify the analytic gradients by comparing them to numerical (symmetric) finite-difference estimates with step $\epsilon=10^{-5}$, using the same loss $L=(y-\tanh(u^{(2)}))^2$ and the exact parameters above.
 
 **Gradient-difference norms (numerical − analytic):**
-- $\big\|\nabla_{\mathbf W^{(1)}}^{\text{num}}-\nabla_{\mathbf W^{(1)}}\big\|_2 \;=\; \mathbf{1.2374\times10^{-10}}$
-- $\big\|\nabla_{\mathbf b^{(1)}}^{\text{num}}-\nabla_{\mathbf b^{(1)}}\big\|_2 \;=\; \mathbf{4.1462\times10^{-11}}$
-- $\big\|\nabla_{\mathbf W^{(2)}}^{\text{num}}-\nabla_{\mathbf W^{(2)}}\big\|_2 \;=\; \mathbf{9.1742\times10^{-11}}$
-- $\big\|\nabla_{b^{(2)}}^{\text{num}}-\nabla_{b^{(2)}}\big\|_2 \;=\; \mathbf{4.8195\times10^{-11}}$
+
+$$
+\big\|\nabla_{\mathbf W^{(1)}}^{\text{num}}-\nabla_{\mathbf W^{(1)}}\big\|_2 \;=\; \mathbf{1.2374\times10^{-10}}
+$$
+
+$$
+\big\|\nabla_{\mathbf b^{(1)}}^{\text{num}}-\nabla_{\mathbf b^{(1)}}\big\|_2 \;=\; \mathbf{4.1462\times10^{-11}}
+$$
+
+$$
+\big\|\nabla_{\mathbf W^{(2)}}^{\text{num}}-\nabla_{\mathbf W^{(2)}}\big\|_2 \;=\; \mathbf{9.1742\times10^{-11}}
+$$
+
+$$
+\big\|\nabla_{b^{(2)}}^{\text{num}}-\nabla_{b^{(2)}}\big\|_2 \;=\; \mathbf{4.8195\times10^{-11}}
+$$
 
 These tiny discrepancies (all $\approx 10^{-10}$) confirm the derivations.
 
-## 5) Summary of Results 
+## 5) Summary of Results
 
 | Quantity | Value |
 |---|---|
@@ -188,7 +238,7 @@ These tiny discrepancies (all $\approx 10^{-10}$) confirm the derivations.
 | $\displaystyle \frac{\partial L}{\partial b^{(2)}}$ | $\mathbf{-1.06326131}$ |
 | $\displaystyle \frac{\partial L}{\partial \mathbf{W}^{(1)}}$ | $\begin{bmatrix} \mathbf{-0.25442909} & \mathbf{0.14330814} \\ \mathbf{0.10177164} & \mathbf{-0.05732326} \end{bmatrix}$ |
 | $\displaystyle \frac{\partial L}{\partial \mathbf{b}^{(1)}}$ | $[\,\mathbf{-0.50885819},\;\mathbf{0.28661628}\,]$ |
-| **Updated** $\mathbf{W}^{(2)}_{\text{new}}=\mathbf{W}^{(2)}-\eta\,\partial L/\partial \mathbf{W}^{(2)}$ (with $\eta=0.3$) | $\begin{bmatrix} \mathbf{0.56601784} \\ \mathbf{-0.40160125} \end{bmatrix}$ |
+| **Updated** $\mathbf{W}^{(2)}_{\text{new}}$ (with $\eta=0.3$) | $\begin{bmatrix} \mathbf{0.56601784} \\ \mathbf{-0.40160125} \end{bmatrix}$ |
 | **Updated** $b^{(2)}_{\text{new}}$ | $\mathbf{0.51897839}$ |
 | **Updated** $\mathbf{W}^{(1)}_{\text{new}}$ | $\begin{bmatrix} \mathbf{0.37632873} & \mathbf{-0.14299244} \\ \mathbf{0.16946851} & \mathbf{0.41719698} \end{bmatrix}$ |
 | **Updated** $\mathbf{b}^{(1)}_{\text{new}}$ | $[\,\mathbf{0.25265746},\;\mathbf{-0.28598488}\,]$ |
@@ -196,7 +246,6 @@ These tiny discrepancies (all $\approx 10^{-10}$) confirm the derivations.
 | FD check $\left\lVert\nabla_{\mathbf b^{(1)}}^{\text{num}}-\nabla_{\mathbf b^{(1)}}\right\rVert_2$ | $\approx 4.1462\times 10^{-11}$ |
 | FD check $\left\lVert\nabla_{\mathbf W^{(2)}}^{\text{num}}-\nabla_{\mathbf W^{(2)}}\right\rVert_2$ | $\approx 9.1742\times 10^{-11}$ |
 | FD check $\left\lVert\nabla_{b^{(2)}}^{\text{num}}-\nabla_{b^{(2)}}\right\rVert_2$ | $\approx 4.8195\times 10^{-11}$ |
-
 
 ---
 
@@ -225,9 +274,8 @@ These tiny discrepancies (all $\approx 10^{-10}$) confirm the derivations.
 - BCE loss decreases smoothly on both train/val (no divergence), indicating stable optimization with $\eta=0.3$.
 - The decision boundary is **nonlinear** (as expected with tanh), separating most points with a gentle transition band.
 - Confusion matrix counts (example run):  
-  $\begin{bmatrix} 86 & 33 \\ 46 & 85 \end{bmatrix}$  
-  i.e., more mistakes occur near the overlap region; class-1→0 errors are slightly higher, suggesting the boundary leans toward precision on class 0.
-- Potential improvements: larger $H$, additional layer, tuned regularization, or data standardization could further tighten the boundary.
+  $\begin{bmatrix} 86 & 33 \\ 46 & 85 \end{bmatrix}$
+- Potential improvements: larger $H$, additional layer, tuned regularization, or data standardization.
 
 ---
 
@@ -255,13 +303,9 @@ These tiny discrepancies (all $\approx 10^{-10}$) confirm the derivations.
 ![Ex3 CM](./images/ex3_cm.png)
 
 **Outcomes & discussion.**
-- **Convergence:** CE loss steadily decreases; accuracy rises from ~0.40 to **~0.72** on validation by the end of training.
-- **Decision regions:** With two tanh layers the model captures **curved boundaries** and a small ambiguous pocket at class intersections.
-- **Confusions (example CM):**
-  - Row 0 (true class 0): **73** correct, **2** as class 1, **7** as class 2.
-  - Row 1: **51** correct, **7** as class 0, **11** as class 2.
-  - Row 2: **37** correct, **14** as class 0, **23** as class 1.
-- Class 2 shows the most confusion, likely due to its overlap with the other two. Increasing capacity or modest dropout could help; more data augmentation (e.g., small jitter) might also reduce variance.
+- CE loss decreases; val accuracy reaches **~0.72**.
+- Decision regions are curved with a small ambiguous pocket at class intersections.
+- Example CM: rows show most confusion on class 2; adding capacity or light dropout could help.
 
 ---
 
@@ -270,7 +314,7 @@ These tiny discrepancies (all $\approx 10^{-10}$) confirm the derivations.
 **Goal.** Compare a **shallow** vs a **deeper** MLP on the same 3-class dataset. Use **dropout** and **early stopping** based on validation loss.
 
 **Models.**
-- **A (shallow):** $2 \rightarrow 16 \rightarrow 3$, tanh, no dropout.  
+- **A (shallow):** $2 \rightarrow 16 \rightarrow 3$, tanh.  
 - **B (deeper):** $2 \rightarrow 32 \rightarrow 32 \rightarrow 3$, tanh, **dropout $p=0.2$**.
 - Optimizer: full-batch GD, **$\eta=0.3$**; L2 $10^{-4}$.  
 - Early stopping: patience 25 (A) / 35 (B), restore best val loss.
@@ -285,21 +329,8 @@ These tiny discrepancies (all $\approx 10^{-10}$) confirm the derivations.
 ![B deeper](./images/ex4_decision_B_deeper.png)
 
 **Outcomes & discussion.**
-- **Validation loss:** Both curves descend rapidly, then flatten; **B** consistently attains a **lower** curve (≈0.62 vs ≈0.65 late in training), showing a small but consistent generalization gain.
-- **Boundaries:**  
-  - **A** forms smooth, mostly linear-plus-curved regions but leaves a wider “uncertain” band at class intersections.  
-  - **B** captures **more nuanced curvature** near the cluster junctions, carving a tighter corner around the overlap, which aligns with its lower validation loss.
-- **Regularization effect:** Dropout ($p=0.2$) in **B** plus early stopping reduces overfitting compared to an equally deep model without regularization (not shown), while keeping capacity to model curved frontiers.
-- **Takeaway:** For this dataset, **depth + regularization** yields **slightly better** validation loss and more expressive boundaries; gains are modest because the task is not highly complex.
+- **B** atinge menor val loss (≈0.62 vs ≈0.65) e fronteiras mais precisas na região de interseção.
+- Dropout + early stopping reduzem overfitting mantendo expressividade.
 
 ---
 
-## 5. Conclusions
-
-- We verified a **full manual backprop** walkthrough (Ex. 1) with exact numbers and gradient checks.  
-- The **binary scratch MLP** (Ex. 2) learned a reasonable nonlinear separator; residual errors are concentrated near the overlap.  
-- The **reusable multiclass MLP** (Ex. 3) achieved ~**0.72** validation accuracy, with interpretable curved regions and a clear error profile in the confusion matrix.  
-- The **deeper + dropout + early-stopped** model (Ex. 4) provided the **best validation loss** and **more precise boundaries**, illustrating the trade-off between capacity and regularization.  
-- All experiments respected **tanh** hidden activations and training **$\eta=0.3$**, and all required visualizations were generated and saved under `./images`.
-
----
