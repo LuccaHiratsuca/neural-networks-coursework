@@ -1,7 +1,7 @@
 site_name: Neural Networks Coursework
 site_description: Coursework for the Neural Networks class at Insper, São Paulo, Brazil.
 site_author: Lucca Hiratsuca Costa
-site_url: https://luccahiratsuca.github.io/neural-networks-coursework
+site_url: https://luccahiratsuca.github.io/neural-networks-coursework/
 repo_url: https://github.com/luccahiratsuca/neural-networks-coursework
 repo_name: github/neural-networks-coursework
 
@@ -43,6 +43,8 @@ theme:
     - content.code.select
     - content.code.annotate
     - content.tooltips
+    - navigation.tabs
+    - navigation.sections
     - navigation.instant
     - navigation.instant.progress
     - navigation.top
@@ -140,3 +142,4 @@ nav:
       - MLP Task: ./exercises/mlp/main.md
   - Projects:
       - Classification Project: ./exercises/classification-project/main.md
+  - This documentation: ./docs/thisdocumentation/main.md
