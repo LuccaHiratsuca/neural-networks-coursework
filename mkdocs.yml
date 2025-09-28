@@ -1,4 +1,5 @@
-site_name: Deep Learning Coursework
+site_name: Neural Networks Coursework
+site_description: Coursework for the Neural Networks class at Insper, São Paulo, Brazil.
 site_author: Lucca Hiratsuca Costa
 site_url: https://luccahiratsuca.github.io/neural-networks-coursework
 repo_url: https://github.com/luccahiratsuca/neural-networks-coursework
@@ -110,7 +111,7 @@ plugins:
       enable_creation_date: true
   - git-authors
   - git-committers:
-      repository: thomaschiari/deep-learning-coursework
+      repository: luccahiratsuca/neural-networks-coursework
       branch: main
   - search
   - badges
