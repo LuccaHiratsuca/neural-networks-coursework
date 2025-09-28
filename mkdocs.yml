@@ -128,18 +128,18 @@ plugins:
         - ">"
 
 extra_javascript:
-  - https://unpkg.com/mathjax/es5/tex-mml-chtml.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://fastly.jsdelivr.net/npm/jquery/dist/jquery.min.js
   - https://fastly.jsdelivr.net/npm/echarts/dist/echarts.min.js
+
 
 nav:
   - Home: index.md
   - Exercises:
-      - Data Task: ./exercises/data/main.md
-      - Perceptron Task: ./exercises/perceptron/main.md
-      - MLP Task: ./exercises/mlp/main.md
+      - Data Task: exercises/data/main.md
+      - Perceptron Task: exercises/perceptron/main.md
+      - MLP Task: exercises/mlp/main.md
   - Projects:
-      - Classification Project: ./exercises/classification-project/main.md
-  - This documentation: ./docs/thisdocumentation/main.md
+      - Classification Project: classification-project/main.md   # sem "exercises/"
+  - This documentation: thisdocumentation/main.md               # sem "docs/"
