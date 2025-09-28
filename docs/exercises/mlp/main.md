@@ -24,17 +24,25 @@ Rubric alignment:
 > **This section contains the full, step-by-step derivation and numerical results.**  
 > It uses $\tanh$ at **both** the hidden and the output layers, **MSE** loss, and gradient-descent updates with $\eta=0.3$, exactly as specified.
 
-**Network & data (given):**
+**Setup (given constants)**
 
 - Input $\mathbf{x} = [\,0.5,\;-0.2\,]$
 - Target $y = 1.0$
-- $\displaystyle \mathbf{W}^{(1)}=\begin{bmatrix}0.3 & -0.1\\[2pt] 0.2 & 0.4\end{bmatrix},\quad \mathbf{b}^{(1)}=[\,0.1,\;-0.2\,]$
-- $\displaystyle \mathbf{W}^{(2)}=\begin{bmatrix}0.5\\[2pt]-0.3\end{bmatrix},\quad b^{(2)} = [\,0.2\,]$
-- Hidden activation: **tanh**; Output activation: **tanh**
+- $\displaystyle \mathbf{W}^{(1)} = \begin{bmatrix} 0.3 & -0.1 \\[2pt] 0.2 & 0.4 \end{bmatrix}$
+- $\displaystyle \mathbf{b}^{(1)} = [\,0.1,\;-0.2\,]$
+- $\displaystyle \mathbf{W}^{(2)} = \begin{bmatrix} 0.5 \\[2pt] -0.3 \end{bmatrix}$
+- $\displaystyle b^{(2)} = 0.2$
+- Hidden activation: **tanh**
+- Output activation: **tanh**
 - Loss: **MSE** $L=\frac{1}{N}(y-\hat y)^2$ (with $N=1$)
 - Learning rate: $\eta=0.3$
 
-tanh derivative: $\displaystyle \frac{d}{du}\tanh(u)=1-\tanh^2(u)$.
+Tanh derivative:
+$$
+\frac{d}{du}\tanh(u) = 1 - \tanh^2(u).
+$$
+
+---
 
 ## 1) Forward Pass
 
@@ -48,30 +56,30 @@ Compute:
 
 $$
 \begin{aligned}
-z^{(1)}_1&=0.5(0.3)+(-0.2)(0.2)+0.1=\mathbf{0.210000},\\
-z^{(1)}_2&=0.5(-0.1)+(-0.2)(0.4)+(-0.2)=\mathbf{-0.330000}.
+z^{(1)}_1 &= 0.5(0.3) + (-0.2)(0.2) + 0.1 = \mathbf{0.210000},\\
+z^{(1)}_2 &= 0.5(-0.1) + (-0.2)(0.4) + (-0.2) = \mathbf{-0.330000}.
 \end{aligned}
 $$
 
 $$
-\boxed{\mathbf{z}^{(1)}=[\,0.210000,\;-0.330000\,]}
+\boxed{\mathbf{z}^{(1)} = [\,0.210000,\;-0.330000\,]}
 $$
 
 **Hidden activations**
 
 $$
-\mathbf{h}^{(1)}=\tanh(\mathbf{z}^{(1)})
+\mathbf{h}^{(1)} = \tanh(\mathbf{z}^{(1)})
 $$
 
 $$
-\boxed{\mathbf{h}^{(1)}=[\,0.20696650,\;-0.31852078\,]}
+\boxed{\mathbf{h}^{(1)} = [\,0.20696650,\;-0.31852078\,]}
 $$
 
 **Output pre-activation**
 
 $$
-u^{(2)}=\mathbf{h}^{(1)}\mathbf{W}^{(2)}+b^{(2)}
-= (0.20696650)(0.5)+(-0.31852078)(-0.3)+0.2
+u^{(2)} = \mathbf{h}^{(1)}\mathbf{W}^{(2)} + b^{(2)}
+= (0.20696650)(0.5) + (-0.31852078)(-0.3) + 0.2
 $$
 
 $$
@@ -81,12 +89,14 @@ $$
 **Final output**
 
 $$
-\hat y=\tanh(u^{(2)})
+\hat y = \tanh(u^{(2)})
 $$
 
 $$
-\boxed{\hat y=0.37912681}
+\boxed{\hat y = 0.37912681}
 $$
+
+---
 
 ## 2) Loss Calculation (MSE)
 
@@ -96,9 +106,11 @@ $$
 L=(y-\hat y)^2=(1.0-0.37912681)^2=\boxed{0.38548352}.
 $$
 
+---
+
 ## 3) Backward Pass (Backpropagation)
 
-Start with $\displaystyle \frac{\partial L}{\partial \hat y}$ and use the **tanh** derivative.
+Start with $\displaystyle \frac{\partial L}{\partial \hat y}$ and apply the **tanh** derivative.
 
 **At the output**
 
@@ -114,112 +126,114 @@ $$
 \frac{\partial L}{\partial u^{(2)}}=\frac{\partial L}{\partial \hat y}\cdot\frac{\partial \hat y}{\partial u^{(2)}}=\boxed{-1.06326131}
 $$
 
-**Output-layer gradients**
+**Gradients for the output layer** $(\mathbf{W}^{(2)}, b^{(2)})$
 
 $$
-\frac{\partial L}{\partial \mathbf{W}^{(2)}}=\mathbf{h}^{(1)\top}\frac{\partial L}{\partial u^{(2)}}
-=\boxed{\begin{bmatrix}-0.22005947\\[2pt]\;\;0.33867082\end{bmatrix}}
+\frac{\partial L}{\partial \mathbf{W}^{(2)}}=\mathbf{h}^{(1)\top}\frac{\partial L}{\partial u^{(2)}} =
+\boxed{\begin{bmatrix} -0.22005947 \\[2pt] 0.33867082 \end{bmatrix}}
 $$
 
 $$
 \frac{\partial L}{\partial b^{(2)}}=\boxed{-1.06326131}
 $$
 
-**Backprop to hidden**
+**Propagate to hidden**
 
 $$
-\frac{\partial L}{\partial \mathbf{h}^{(1)}}=\frac{\partial L}{\partial u^{(2)}}\,\mathbf{W}^{(2)\top}
+\frac{\partial L}{\partial \mathbf{h}^{(1)}} = \frac{\partial L}{\partial u^{(2)}}\,\mathbf{W}^{(2)\top}
 =\boxed{[\, -0.53163065,\; 0.31897839 \,]}
 $$
 
 $$
-\frac{\partial \mathbf{h}^{(1)}}{\partial \mathbf{z}^{(1)}} = 1-\tanh^2(\mathbf{z}^{(1)})
-=\boxed{[\,0.95716487,\;0.89854451\,]}
+\frac{\partial \mathbf{h}^{(1)}}{\partial \mathbf{z}^{(1)}} = 1-\tanh^2(\mathbf{z}^{(1)})=\boxed{[\,0.95716487,\;0.89854451\,]}
 $$
 
 $$
-\frac{\partial L}{\partial \mathbf{z}^{(1)}}=
-\frac{\partial L}{\partial \mathbf{h}^{(1)}}\odot\frac{\partial \mathbf{h}^{(1)}}{\partial \mathbf{z}^{(1)}}
+\frac{\partial L}{\partial \mathbf{z}^{(1)}} =
+\frac{\partial L}{\partial \mathbf{h}^{(1)}} \odot \frac{\partial \mathbf{h}^{(1)}}{\partial \mathbf{z}^{(1)}}
 =\boxed{[\, -0.50885819,\; 0.28661628 \,]}
 $$
 
-**Hidden-layer gradients**
+**Gradients for the hidden layer** $(\mathbf{W}^{(1)}, \mathbf{b}^{(1)})$
 
 $$
-\frac{\partial L}{\partial \mathbf{W}^{(1)}}=
+\frac{\partial L}{\partial \mathbf{W}^{(1)}} =
 \boxed{\begin{bmatrix}
--0.25442909 & \;\;0.14330814\\[2pt]
+-0.25442909 & 0.14330814 \\
 \;\;0.10177164 & -0.05732326
 \end{bmatrix}}
 $$
 
 $$
-\frac{\partial L}{\partial \mathbf{b}^{(1)}}=
+\frac{\partial L}{\partial \mathbf{b}^{(1)}} =
 \boxed{[\, -0.50885819,\; 0.28661628 \,]}
 $$
 
-## 4) Parameter Update (GD, $\eta=0.3$)
+---
 
-$$
-\theta\leftarrow\theta-\eta\,\frac{\partial L}{\partial\theta}.
-$$
+## 4) Parameter Update (Gradient Descent, $\eta=0.3$)
+
+Regra: $\ \theta \leftarrow \theta - \eta\,\dfrac{\partial L}{\partial \theta}$
 
 **Output layer**
 
 $$
 \mathbf{W}^{(2)}_{\text{new}}=
 \begin{bmatrix}0.5\\[2pt]-0.3\end{bmatrix}
--0.3\begin{bmatrix}-0.22005947\\[2pt]\;\;0.33867082\end{bmatrix}
-=\boxed{\begin{bmatrix}0.56601784\\[2pt]-0.40160125\end{bmatrix}}
+- 0.3 \begin{bmatrix}-0.22005947\\[2pt] 0.33867082\end{bmatrix}
+= \boxed{\begin{bmatrix} 0.56601784 \\[2pt] -0.40160125 \end{bmatrix}}
 $$
 
 $$
-b^{(2)}_{\text{new}}=\boxed{0.51897839}
+b^{(2)}_{\text{new}} = 0.2 - 0.3(-1.06326131) = \boxed{0.51897839}
 $$
 
 **Hidden layer**
 
 $$
-\mathbf{W}^{(1)}_{\text{new}}=
-\begin{bmatrix}0.3 & -0.1\\[2pt]0.2 & 0.4\end{bmatrix}
--0.3\begin{bmatrix}-0.25442909 & \;\;0.14330814\\[2pt]0.10177164 & -0.05732326\end{bmatrix}
-=\boxed{\begin{bmatrix}
-0.37632873 & -0.14299244\\[2pt]
+\mathbf{W}^{(1)}_{\text{new}} =
+\begin{bmatrix} 0.3 & -0.1 \\[2pt] 0.2 & 0.4 \end{bmatrix}
+- 0.3
+\begin{bmatrix} -0.25442909 & 0.14330814 \\[2pt] 0.10177164 & -0.05732326 \end{bmatrix}
+= \boxed{\begin{bmatrix}
+0.37632873 & -0.14299244 \\
 0.16946851 & \;\;0.41719698
 \end{bmatrix}}
 $$
 
 $$
-\mathbf{b}^{(1)}_{\text{new}}=
-[\,0.1,\;-0.2\,]-0.3[\, -0.50885819,\; 0.28661628 \,]
-=\boxed{[\,0.25265746,\;-0.28598488\,]}
+\mathbf{b}^{(1)}_{\text{new}} =
+[\,0.1,\;-0.2\,] - 0.3[\, -0.50885819,\; 0.28661628\,]
+= \boxed{[\,0.25265746,\;-0.28598488\,]}
 $$
 
-## (Optional) Finite-Difference Sanity Checks
+---
 
-We verify the analytic gradients by comparing them to numerical (symmetric) finite-difference estimates with step $\epsilon=10^{-5}$, using the same loss $L=(y-\tanh(u^{(2)}))^2$ and the exact parameters above.
+## 5) Summary (flat view — no matrices)
 
-**Gradient-difference norms (numerical − analytic):**
+- $W^{(2)} = [\,\mathbf{0.56601784},\ \mathbf{-0.40160125}\,]$  
+- $b^{(2)} = \mathbf{0.51897839}$  
+- $W^{(1)}_{11}=\mathbf{0.37632873}$, $W^{(1)}_{12}=\mathbf{-0.14299244}$,  
+  $W^{(1)}_{21}=\mathbf{0.16946851}$, $W^{(1)}_{22}=\mathbf{0.41719698}$  
+- $b^{(1)} = [\,\mathbf{0.25265746},\ \mathbf{-0.28598488}\,]$
 
-$$
-\big\|\nabla_{\mathbf W^{(1)}}^{\text{num}}-\nabla_{\mathbf W^{(1)}}\big\|_2 \;=\; \mathbf{1.2374\times10^{-10}}
-$$
+---
 
-$$
-\big\|\nabla_{\mathbf b^{(1)}}^{\text{num}}-\nabla_{\mathbf b^{(1)}}\big\|_2 \;=\; \mathbf{4.1462\times10^{-11}}
-$$
+## (Optional) Finite-Difference Check
 
-$$
-\big\|\nabla_{\mathbf W^{(2)}}^{\text{num}}-\nabla_{\mathbf W^{(2)}}\big\|_2 \;=\; \mathbf{9.1742\times10^{-11}}
-$$
+We compare analytic gradients to symmetric finite differences with step $\epsilon=10^{-5}$ (same loss and parameters).
 
-$$
-\big\|\nabla_{b^{(2)}}^{\text{num}}-\nabla_{b^{(2)}}\big\|_2 \;=\; \mathbf{4.8195\times10^{-11}}
-$$
+**Norms (numerical − analytic)**
+- $\big\|\nabla_{\mathbf W^{(1)}}^{\text{num}}-\nabla_{\mathbf W^{(1)}}\big\|_2 \approx 1.2374\times10^{-10}$
+- $\big\|\nabla_{\mathbf b^{(1)}}^{\text{num}}-\nabla_{\mathbf b^{(1)}}\big\|_2 \approx 4.1462\times10^{-11}$
+- $\big\|\nabla_{\mathbf W^{(2)}}^{\text{num}}-\nabla_{\mathbf W^{(2)}}\big\|_2 \approx 9.1742\times10^{-11}$
+- $\big\|\nabla_{b^{(2)}}^{\text{num}}-\nabla_{b^{(2)}}\big\|_2 \approx 4.8195\times10^{-11}$
 
-These tiny discrepancies (all $\approx 10^{-10}$) confirm the derivations.
+These tiny gaps confirm the derivations.
 
-## 5) Summary of Results
+---
+
+## 5) Summary of all Results
 
 | Quantity | Value |
 |---|---|
