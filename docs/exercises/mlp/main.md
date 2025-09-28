@@ -21,247 +21,386 @@ Rubric alignment:
 
 # Exercise 1 — Manual Calculation of an MLP *(tanh, $\eta=0.3$)*
 
-> **This section contains the full, step-by-step derivation and numerical results.**  
-> It uses $\tanh$ at **both** the hidden and the output layers, **MSE** loss, and gradient-descent updates with $\eta=0.3$, exactly as specified.
+# Exercise 1 — Manual Calculation of a 1-Hidden-Layer MLP (tanh, $\eta=0.3$)
 
-**Setup (given constants)**
-
-- Input $\mathbf{x} = [\,0.5,\;-0.2\,]$
-- Target $y = 1.0$
-- $\displaystyle \mathbf{W}^{(1)} = \begin{bmatrix} 0.3 & -0.1 \\[2pt] 0.2 & 0.4 \end{bmatrix}$
-- $\displaystyle \mathbf{b}^{(1)} = [\,0.1,\;-0.2\,]$
-- $\displaystyle \mathbf{W}^{(2)} = \begin{bmatrix} 0.5 \\[2pt] -0.3 \end{bmatrix}$
-- $\displaystyle b^{(2)} = 0.2$
+We manually compute a forward and backward pass (with parameter updates) for a tiny MLP:
 - Hidden activation: **tanh**
-- Output activation: **tanh**
-- Loss: **MSE** $L=\frac{1}{N}(y-\hat y)^2$ (with $N=1$)
-- Learning rate: $\eta=0.3$
+- **Output activation: tanh**
+- Loss: **Mean Squared Error (MSE)** with a **single sample** ($N=1$)
+- Learning rate: **$\eta = 0.3$**
 
-Tanh derivative:
-$$
-\frac{d}{du}\tanh(u) = 1 - \tanh^2(u).
-$$
+---
+
+## Setup (given)
+
+- Input  
+  $\mathbf{x} = [\,0.5,\; -0.2\,]$
+
+- Target  
+  $y = 1.0$
+
+- Parameters  
+  $\displaystyle
+  \mathbf{W}^{(1)} =
+  \begin{bmatrix}
+  0.3 & -0.1\\
+  0.2 & \;\;0.4
+  \end{bmatrix},\quad
+  \mathbf{b}^{(1)} = [\,0.1,\; -0.2\,]$
+  
+  $\displaystyle
+  \mathbf{W}^{(2)} =
+  \begin{bmatrix}
+  0.5\\
+ -0.3
+  \end{bmatrix},\quad
+  b^{(2)} = 0.2$
+
+- Activation and its derivative  
+  $\displaystyle \tanh(u) \quad\text{and}\quad \frac{d}{du}\tanh(u) = 1-\tanh^2(u)$
+
+- MSE loss (single example)  
+  $\displaystyle L = (y - \hat y)^2$
 
 ---
 
 ## 1) Forward Pass
 
-**Hidden pre-activations**
+### (a) Hidden pre-activations
 
-$$
-\mathbf{z}^{(1)}=\mathbf{x}\,\mathbf{W}^{(1)}+\mathbf{b}^{(1)}
-$$
+**Formula used:**  
+For a fully connected layer,  
+$\displaystyle \mathbf{z}^{(1)} = \mathbf{x}\,\mathbf{W}^{(1)} + \mathbf{b}^{(1)}.$
 
-Compute:
+**Plugging the numbers:**
 
 $$
 \begin{aligned}
-z^{(1)}_1 &= 0.5(0.3) + (-0.2)(0.2) + 0.1 = \mathbf{0.210000},\\
-z^{(1)}_2 &= 0.5(-0.1) + (-0.2)(0.4) + (-0.2) = \mathbf{-0.330000}.
+z^{(1)}_1 &= 0.5(0.3) + (-0.2)(0.2) + 0.1
+= 0.15 - 0.04 + 0.10
+= \boxed{0.210000},\\[4pt]
+z^{(1)}_2 &= 0.5(-0.1) + (-0.2)(0.4) + (-0.2)
+= -0.05 - 0.08 - 0.20
+= \boxed{-0.330000}.
 \end{aligned}
 $$
 
-$$
-\boxed{\mathbf{z}^{(1)} = [\,0.210000,\;-0.330000\,]}
-$$
+So  
+$\displaystyle \boxed{\mathbf{z}^{(1)} = [\,0.210000,\; -0.330000\,]}.$
 
-**Hidden activations**
+---
 
-$$
-\mathbf{h}^{(1)} = \tanh(\mathbf{z}^{(1)})
-$$
+### (b) Hidden activations
 
-$$
-\boxed{\mathbf{h}^{(1)} = [\,0.20696650,\;-0.31852078\,]}
-$$
+**Formula used:**  
+$\displaystyle \mathbf{h}^{(1)} = \tanh(\mathbf{z}^{(1)}).$
 
-**Output pre-activation**
+**Plugging the numbers:**
 
 $$
-u^{(2)} = \mathbf{h}^{(1)}\mathbf{W}^{(2)} + b^{(2)}
-= (0.20696650)(0.5) + (-0.31852078)(-0.3) + 0.2
-$$
-
-$$
-\boxed{u^{(2)}=0.39903948}
-$$
-
-**Final output**
-
-$$
-\hat y = \tanh(u^{(2)})
-$$
-
-$$
-\boxed{\hat y = 0.37912681}
+\boxed{\mathbf{h}^{(1)} = [\,\tanh(0.210000),\; \tanh(-0.330000)\,]
+= [\,0.20696650,\; -0.31852078\,]}.
 $$
 
 ---
 
-## 2) Loss Calculation (MSE)
+### (c) Output pre-activation
 
-With $N=1$:
+**Formula used:**  
+$\displaystyle u^{(2)} = \mathbf{h}^{(1)}\mathbf{W}^{(2)} + b^{(2)}.$
+
+**Plugging the numbers:**
 
 $$
-L=(y-\hat y)^2=(1.0-0.37912681)^2=\boxed{0.38548352}.
+u^{(2)} = (0.20696650)(0.5) + (-0.31852078)(-0.3) + 0.2
+= 0.10348325 + 0.09555623 + 0.20000000
+= \boxed{0.39903948}.
 $$
 
 ---
 
-## 3) Backward Pass (Backpropagation)
+### (d) Final output (tanh)
 
-Start with $\displaystyle \frac{\partial L}{\partial \hat y}$ and apply the **tanh** derivative.
+**Formula used:**  
+$\displaystyle \hat y = \tanh\!\big(u^{(2)}\big).$
 
-**At the output**
-
-$$
-\frac{\partial L}{\partial \hat y}=2(\hat y-y)=\boxed{-1.24174638}
-$$
+**Plugging the number:**
 
 $$
-\frac{\partial \hat y}{\partial u^{(2)}}=1-\hat y^2=\boxed{0.85626286}
+\boxed{\hat y = \tanh(0.39903948) = 0.37912681}.
+$$
+
+---
+
+## 2) Loss (MSE)
+
+**Formula used (single example):**  
+$\displaystyle L = (y - \hat y)^2.$
+
+**Plugging the numbers:**
+
+$$
+\boxed{L = (1.0 - 0.37912681)^2 = 0.38548352}.
+$$
+
+---
+
+## 3) Backward Pass (Gradients)
+
+We apply the chain rule from the output to the input parameters.
+
+### (a) Output node
+
+**Formulas used:**
+
+1. $\displaystyle \frac{\partial L}{\partial \hat y} = 2(\hat y - y)$  
+2. $\displaystyle \frac{\partial \hat y}{\partial u^{(2)}} = 1 - \tanh^2(u^{(2)}) = 1 - \hat y^2$  
+3. $\displaystyle \frac{\partial L}{\partial u^{(2)}} = \frac{\partial L}{\partial \hat y}\cdot \frac{\partial \hat y}{\partial u^{(2)}}$
+
+**Plugging the numbers:**
+
+$$
+\frac{\partial L}{\partial \hat y} = 2(0.37912681 - 1.0) = \boxed{-1.24174638}
 $$
 
 $$
-\frac{\partial L}{\partial u^{(2)}}=\frac{\partial L}{\partial \hat y}\cdot\frac{\partial \hat y}{\partial u^{(2)}}=\boxed{-1.06326131}
-$$
-
-**Gradients for the output layer** $(\mathbf{W}^{(2)}, b^{(2)})$
-
-$$
-\frac{\partial L}{\partial \mathbf{W}^{(2)}}=\mathbf{h}^{(1)\top}\frac{\partial L}{\partial u^{(2)}} =
-\boxed{\begin{bmatrix} -0.22005947 \\[2pt] 0.33867082 \end{bmatrix}}
+\frac{\partial \hat y}{\partial u^{(2)}} = 1 - (0.37912681)^2 = \boxed{0.85626286}
 $$
 
 $$
-\frac{\partial L}{\partial b^{(2)}}=\boxed{-1.06326131}
+\frac{\partial L}{\partial u^{(2)}} = (-1.24174638)(0.85626286) = \boxed{-1.06326131}
 $$
 
-**Propagate to hidden**
+---
+
+### (b) Output layer parameters $(\mathbf{W}^{(2)}, b^{(2)})$
+
+**Formulas used (linear layer):**  
+1. $\displaystyle \frac{\partial L}{\partial \mathbf{W}^{(2)}} = \mathbf{h}^{(1)\top}\frac{\partial L}{\partial u^{(2)}}$  
+2. $\displaystyle \frac{\partial L}{\partial b^{(2)}} = \frac{\partial L}{\partial u^{(2)}}$
+
+**Plugging the numbers:**
 
 $$
-\frac{\partial L}{\partial \mathbf{h}^{(1)}} = \frac{\partial L}{\partial u^{(2)}}\,\mathbf{W}^{(2)\top}
-=\boxed{[\, -0.53163065,\; 0.31897839 \,]}
+\boxed{
+\frac{\partial L}{\partial \mathbf{W}^{(2)}} =
+\begin{bmatrix}
+0.20696650\\[2pt]
+-0.31852078
+\end{bmatrix}
+(-1.06326131)
+=
+\begin{bmatrix}
+-0.22005947\\[2pt]
+\;\;0.33867082
+\end{bmatrix}
+}
+\qquad
+\boxed{\frac{\partial L}{\partial b^{(2)}} = -1.06326131}
+$$
+
+---
+
+### (c) Backprop to hidden
+
+**Formulas used:**  
+1. $\displaystyle \frac{\partial L}{\partial \mathbf{h}^{(1)}} = \frac{\partial L}{\partial u^{(2)}}\,\mathbf{W}^{(2)\top}$  
+2. $\displaystyle \frac{\partial \mathbf{h}^{(1)}}{\partial \mathbf{z}^{(1)}} =
+1 - \tanh^2(\mathbf{z}^{(1)})$  
+3. Element-wise chain:  
+   $\displaystyle \frac{\partial L}{\partial \mathbf{z}^{(1)}} =
+   \left(\frac{\partial L}{\partial \mathbf{h}^{(1)}}\right)
+   \odot
+   \left(\frac{\partial \mathbf{h}^{(1)}}{\partial \mathbf{z}^{(1)}}\right)$
+
+**Plugging the numbers:**
+
+$$
+\frac{\partial L}{\partial \mathbf{h}^{(1)}}
+= (-1.06326131)\,[\,0.5,\;-0.3\,]
+= \boxed{[\, -0.53163065,\;\;0.31897839\,]}
 $$
 
 $$
-\frac{\partial \mathbf{h}^{(1)}}{\partial \mathbf{z}^{(1)}} = 1-\tanh^2(\mathbf{z}^{(1)})=\boxed{[\,0.95716487,\;0.89854451\,]}
+\frac{\partial \mathbf{h}^{(1)}}{\partial \mathbf{z}^{(1)}}
+= 1 - [\,\tanh(0.210000)^2,\;\tanh(-0.330000)^2\,]
+= \boxed{[\,0.95716487,\;0.89854451\,]}
 $$
 
 $$
-\frac{\partial L}{\partial \mathbf{z}^{(1)}} =
-\frac{\partial L}{\partial \mathbf{h}^{(1)}} \odot \frac{\partial \mathbf{h}^{(1)}}{\partial \mathbf{z}^{(1)}}
-=\boxed{[\, -0.50885819,\; 0.28661628 \,]}
+\frac{\partial L}{\partial \mathbf{z}^{(1)}}
+= [\, -0.53163065,\;\;0.31897839\,] \odot [\,0.95716487,\;0.89854451\,]
+= \boxed{[\, -0.50885819,\;\;0.28661628\,]}
 $$
 
-**Gradients for the hidden layer** $(\mathbf{W}^{(1)}, \mathbf{b}^{(1)})$
+---
+
+### (d) Hidden layer parameters $(\mathbf{W}^{(1)}, \mathbf{b}^{(1)})$
+
+**Formulas used (linear layer):**  
+1. $\displaystyle \frac{\partial L}{\partial \mathbf{W}^{(1)}} = \mathbf{x}^\top \frac{\partial L}{\partial \mathbf{z}^{(1)}}$  
+2. $\displaystyle \frac{\partial L}{\partial \mathbf{b}^{(1)}} = \frac{\partial L}{\partial \mathbf{z}^{(1)}}$ (sum over batch; here $N=1$)
+
+**Plugging the numbers:**
 
 $$
+\boxed{
 \frac{\partial L}{\partial \mathbf{W}^{(1)}} =
-\boxed{\begin{bmatrix}
--0.25442909 & 0.14330814 \\
+\begin{bmatrix}
+0.5\\[2pt]
+-0.2
+\end{bmatrix}
+\begin{bmatrix}
+-0.50885819 & \;\;0.28661628
+\end{bmatrix}
+=
+\begin{bmatrix}
+-0.25442909 & \;\;0.14330814\\[2pt]
 \;\;0.10177164 & -0.05732326
-\end{bmatrix}}
+\end{bmatrix}
+}
 $$
 
 $$
+\boxed{
 \frac{\partial L}{\partial \mathbf{b}^{(1)}} =
-\boxed{[\, -0.50885819,\; 0.28661628 \,]}
+[\, -0.50885819,\;\; 0.28661628\,]
+}
 $$
 
 ---
 
 ## 4) Parameter Update (Gradient Descent, $\eta=0.3$)
 
-Regra: $\ \theta \leftarrow \theta - \eta\,\dfrac{\partial L}{\partial \theta}$
+**Update rule used (all parameters):**  
+$\displaystyle \theta \leftarrow \theta - \eta \,\frac{\partial L}{\partial \theta}.$
 
-**Output layer**
+### (a) Output layer
+
+**Plugging the numbers:**
 
 $$
-\mathbf{W}^{(2)}_{\text{new}}=
-\begin{bmatrix}0.5\\[2pt]-0.3\end{bmatrix}
-- 0.3 \begin{bmatrix}-0.22005947\\[2pt] 0.33867082\end{bmatrix}
-= \boxed{\begin{bmatrix} 0.56601784 \\[2pt] -0.40160125 \end{bmatrix}}
+\mathbf{W}^{(2)}_{\text{new}} =
+\begin{bmatrix}
+0.5\\[2pt]
+-0.3
+\end{bmatrix}
+- 0.3
+\begin{bmatrix}
+-0.22005947\\[2pt]
+\;\;0.33867082
+\end{bmatrix}
+=
+\boxed{
+\begin{bmatrix}
+0.56601784\\[2pt]
+-0.40160125
+\end{bmatrix}}
 $$
 
 $$
 b^{(2)}_{\text{new}} = 0.2 - 0.3(-1.06326131) = \boxed{0.51897839}
 $$
 
-**Hidden layer**
+---
+
+### (b) Hidden layer
+
+**Plugging the numbers:**
 
 $$
 \mathbf{W}^{(1)}_{\text{new}} =
-\begin{bmatrix} 0.3 & -0.1 \\[2pt] 0.2 & 0.4 \end{bmatrix}
+\begin{bmatrix}
+0.3 & -0.1\\[2pt]
+0.2 & \;\;0.4
+\end{bmatrix}
 - 0.3
-\begin{bmatrix} -0.25442909 & 0.14330814 \\[2pt] 0.10177164 & -0.05732326 \end{bmatrix}
-= \boxed{\begin{bmatrix}
-0.37632873 & -0.14299244 \\
+\begin{bmatrix}
+-0.25442909 & \;\;0.14330814\\[2pt]
+\;\;0.10177164 & -0.05732326
+\end{bmatrix}
+=
+\boxed{
+\begin{bmatrix}
+0.37632873 & -0.14299244\\[2pt]
 0.16946851 & \;\;0.41719698
 \end{bmatrix}}
 $$
 
 $$
 \mathbf{b}^{(1)}_{\text{new}} =
-[\,0.1,\;-0.2\,] - 0.3[\, -0.50885819,\; 0.28661628\,]
-= \boxed{[\,0.25265746,\;-0.28598488\,]}
+[\,0.1,\; -0.2\,] - 0.3[\, -0.50885819,\; 0.28661628\,]
+= \boxed{[\,0.25265746,\; -0.28598488\,]}
 $$
 
 ---
 
-## 5) Summary (flat view — no matrices)
+## 5) Flat Summary (no matrices)
 
-- $W^{(2)} = [\,\mathbf{0.56601784},\ \mathbf{-0.40160125}\,]$  
+- $W^{(2)} = [\,\mathbf{0.56601784},\; \mathbf{-0.40160125}\,]$  
 - $b^{(2)} = \mathbf{0.51897839}$  
 - $W^{(1)}_{11}=\mathbf{0.37632873}$, $W^{(1)}_{12}=\mathbf{-0.14299244}$,  
   $W^{(1)}_{21}=\mathbf{0.16946851}$, $W^{(1)}_{22}=\mathbf{0.41719698}$  
-- $b^{(1)} = [\,\mathbf{0.25265746},\ \mathbf{-0.28598488}\,]$
+- $b^{(1)} = [\,\mathbf{0.25265746},\; \mathbf{-0.28598488}\,]$
 
 ---
 
-## (Optional) Finite-Difference Check
+## (Optional) Reproducibility — Minimal NumPy script
 
-We compare analytic gradients to symmetric finite differences with step $\epsilon=10^{-5}$ (same loss and parameters).
+> Use **tanh output** + **MSE** + **$\eta=0.3$** to get the same numbers above.
 
-**Norms (numerical − analytic)**
-- $\big\|\nabla_{\mathbf W^{(1)}}^{\text{num}}-\nabla_{\mathbf W^{(1)}}\big\|_2 \approx 1.2374\times10^{-10}$
-- $\big\|\nabla_{\mathbf b^{(1)}}^{\text{num}}-\nabla_{\mathbf b^{(1)}}\big\|_2 \approx 4.1462\times10^{-11}$
-- $\big\|\nabla_{\mathbf W^{(2)}}^{\text{num}}-\nabla_{\mathbf W^{(2)}}\big\|_2 \approx 9.1742\times10^{-11}$
-- $\big\|\nabla_{b^{(2)}}^{\text{num}}-\nabla_{b^{(2)}}\big\|_2 \approx 4.8195\times10^{-11}$
+```python
+import numpy as np
 
-These tiny gaps confirm the derivations.
+# Given
+x = np.array([[0.5, -0.2]])
+t = np.array([[1.0]])
 
----
+W1 = np.array([[0.3, -0.1],
+               [0.2,  0.4]])
+b1 = np.array([[0.1, -0.2]])
 
-## 5) Summary of all Results
+W2 = np.array([[ 0.5],
+               [-0.3]])
+b2 = np.array([[0.2]])
 
-| Quantity | Value |
-|---|---|
-| Input $\mathbf{x}$ | $[\,0.5,\;-0.2\,]$ |
-| Target $y$ | $1.0$ |
-| $\mathbf{W}^{(1)}$ | $\begin{bmatrix} 0.3 & -0.1 \\ 0.2 & 0.4 \end{bmatrix}$ |
-| $\mathbf{b}^{(1)}$ | $[\,0.1,\;-0.2\,]$ |
-| $\mathbf{W}^{(2)}$ | $\begin{bmatrix} 0.5 \\ -0.3 \end{bmatrix}$ |
-| $b^{(2)}$ | $0.2$ |
-| Hidden pre-activation $\mathbf{z}^{(1)}$ | $[\,\mathbf{0.210000},\;\mathbf{-0.330000}\,]$ |
-| Hidden activation $\mathbf{h}^{(1)}=\tanh(\mathbf{z}^{(1)})$ | $[\,\mathbf{0.20696650},\;\mathbf{-0.31852078}\,]$ |
-| Output pre-activation $u^{(2)}$ | $\mathbf{0.39903948}$ |
-| Final output $\hat y=\tanh(u^{(2)})$ | $\mathbf{0.37912681}$ |
-| **MSE loss** $L=(y-\hat y)^2$ | $\mathbf{0.38548352}$ |
-| $\displaystyle \frac{\partial L}{\partial \mathbf{W}^{(2)}}$ | $\begin{bmatrix} \mathbf{-0.22005947} \\ \mathbf{0.33867082} \end{bmatrix}$ |
-| $\displaystyle \frac{\partial L}{\partial b^{(2)}}$ | $\mathbf{-1.06326131}$ |
-| $\displaystyle \frac{\partial L}{\partial \mathbf{W}^{(1)}}$ | $\begin{bmatrix} \mathbf{-0.25442909} & \mathbf{0.14330814} \\ \mathbf{0.10177164} & \mathbf{-0.05732326} \end{bmatrix}$ |
-| $\displaystyle \frac{\partial L}{\partial \mathbf{b}^{(1)}}$ | $[\,\mathbf{-0.50885819},\;\mathbf{0.28661628}\,]$ |
-| **Updated** $\mathbf{W}^{(2)}_{\text{new}}$ (with $\eta=0.3$) | $\begin{bmatrix} \mathbf{0.56601784} \\ \mathbf{-0.40160125} \end{bmatrix}$ |
-| **Updated** $b^{(2)}_{\text{new}}$ | $\mathbf{0.51897839}$ |
-| **Updated** $\mathbf{W}^{(1)}_{\text{new}}$ | $\begin{bmatrix} \mathbf{0.37632873} & \mathbf{-0.14299244} \\ \mathbf{0.16946851} & \mathbf{0.41719698} \end{bmatrix}$ |
-| **Updated** $\mathbf{b}^{(1)}_{\text{new}}$ | $[\,\mathbf{0.25265746},\;\mathbf{-0.28598488}\,]$ |
-| FD check $\left\lVert\nabla_{\mathbf W^{(1)}}^{\text{num}}-\nabla_{\mathbf W^{(1)}}\right\rVert_2$ | $\approx 1.2374\times 10^{-10}$ |
-| FD check $\left\lVert\nabla_{\mathbf b^{(1)}}^{\text{num}}-\nabla_{\mathbf b^{(1)}}\right\rVert_2$ | $\approx 4.1462\times 10^{-11}$ |
-| FD check $\left\lVert\nabla_{\mathbf W^{(2)}}^{\text{num}}-\nabla_{\mathbf W^{(2)}}\right\rVert_2$ | $\approx 9.1742\times 10^{-11}$ |
-| FD check $\left\lVert\nabla_{b^{(2)}}^{\text{num}}-\nabla_{b^{(2)}}\right\rVert_2$ | $\approx 4.8195\times 10^{-11}$ |
+eta = 0.3
 
----
+# Activations
+tanh  = np.tanh
+dtanh = lambda z: 1 - np.tanh(z)**2
+
+# Forward (tanh output)
+z1 = x @ W1 + b1
+h1 = tanh(z1)
+u2 = h1 @ W2 + b2
+y  = tanh(u2)
+L  = (t - y)**2    # MSE, N=1
+
+# Backward
+dL_dy  = 2*(y - t)
+dy_du2 = dtanh(u2)
+dL_du2 = dL_dy * dy_du2
+
+dW2 = h1.T @ dL_du2
+db2 = dL_du2
+
+dh1 = dL_du2 @ W2.T
+dz1 = dh1 * dtanh(z1)
+dW1 = x.T @ dz1
+db1 = dz1
+
+# Update
+W2_new = W2 - eta * dW2
+b2_new = b2 - eta * db2
+W1_new = W1 - eta * dW1
+b1_new = b1 - eta * db1
+
+print("W2_new:\n", W2_new)
+print("b2_new:\n", b2_new)
+print("W1_new:\n", W1_new)
+print("b1_new:\n", b1_new)
+```
 
 # Exercise 2 — Binary Classification with Synthetic Data (Scratch MLP)
 
