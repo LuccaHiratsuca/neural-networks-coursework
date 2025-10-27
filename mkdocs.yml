@@ -140,6 +140,9 @@ nav:
       - Data Task: exercises/data/main.md
       - Perceptron Task: exercises/perceptron/main.md
       - MLP Task: exercises/mlp/main.md
+      - VAE Task: exercises/vae/main.md
   - Projects:
       - Classification Project: classification-project/main.md   # sem "exercises/"
+      - Regression Project: regression-project/main.md         # sem "exercises/"
+      - Generative Project: generative-project/main.md         # sem "exercises/"
   - This documentation: thisdocumentation/main.md               # sem "docs/"

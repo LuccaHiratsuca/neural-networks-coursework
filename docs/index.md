@@ -18,11 +18,15 @@ Each dealiverable exercise was made individually
 
 - [x] Perceptron Task - 14/09/2025
 
-- [x] MLP Task - 24/09/2025
+- [x] MLP Task - 21/08/2025
+
+- [x] VAE Task - 26/09/2025
 
 - [x] Classification Project - 05/10/2025
 
 - [x] Regression Project - 26/10/2025
+
+- [x] Generative Project - 16/11/2025
 
 
 ## References
