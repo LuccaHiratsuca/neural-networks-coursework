@@ -1,6 +1,6 @@
 # Variational Autoencoder on MNIST
 
-The notebook is available [here](../../../notebooks/vae_activity.ipynb)
+The notebook is available in the repository inside the `notebooks` folder.
 
 ## 1. Introduction
 
@@ -123,21 +123,21 @@ The VAE loss combines:
 
 ### 4.1. Reconstruction Loss
 
-$
+$[
 \text{BCE}(x, \hat{x}) = -\sum_i [x_i \log \hat{x}_i + (1-x_i)\log(1-\hat{x}_i)]
-$
+]$
 
 ### 4.2. KL Divergence
 
-$
+$[
 \text{KL}(q(z|x) || p(z)) = -\frac{1}{2} \sum_j (1 + \log\sigma_j^2 - \mu_j^2 - \sigma_j^2)
-$
+]$
 
 ### 4.3. Total Loss
 
-$
+$[
 \mathcal{L} = \text{BCE} + \text{KLD}
-$
+]$
 
 Both terms work together: BCE ensures accurate reconstruction; KL regularizes the latent space.
 ---
