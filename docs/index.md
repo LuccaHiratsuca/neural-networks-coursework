@@ -22,6 +22,8 @@ Each dealiverable exercise was made individually
 
 - [x] Classification Project - 05/10/2025
 
+- [x] Regression Project - 26/10/2025
+
 
 ## References
 
